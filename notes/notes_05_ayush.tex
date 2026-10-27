@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+\usepackage{speakernotes}
+\colorlet{speaker}{spAyush}
+\newcommand{\speakername}{Ayush}
+\newcommand{\partno}{05}
+\newcommand{\parttitle}{Comparison, critical analysis and conclusion}
+
+\begin{document}
+\cover{%
+\cheat{Your job}{About \textbf{5 minutes}. Put John's numbers in context: what were they compared with, do they add up, what did our own re-simulation show, does it scale, and what are the weak spots. Then close the talk and run Q\&A. You took over the harder results material from Part 4: the static-vs-fuzzy figure (Fig.\,4), Table IV, the cost breakdown and AWS pricing (Table II).}
+\cheat{Your slides}{Slides \slidenum{part-05}--\slidenum{thanks}.}
+\cheat{Opening line}{``Thanks John. Those are strong numbers. Let's see what they are compared with, whether they add up, and where the paper is weaker.''}
+\cheat{Closing line}{``To sum up: a small, readable fuzzy controller inside oneM2M that improves speed, reliability and cost under overload. Convincing as a prototype, but the evidence is still one edge node and one cloud VM. Thank you; we're happy to take questions.''}
+\cheat{Arithmetic you can show on demand}{%
+Cost: $(2.1667-1.2242)/2.1667 = 0.435$ \quad RTT: $(8.50-3.75)/8.50 = 0.559$\\
+Success: $(92.5-77.5)/77.5 = 0.194$ relative $=$ +15 percentage points absolute\\
+Medium: $0.5417\rightarrow0.3575$ ($-34\,\%$) \quad Peak: $0.5417\rightarrow0.3033$ ($-44\,\%$) \quad Heavy: $0.5417\rightarrow0.5583$ ($+3\,\%$)\\
+t2.medium: \$0.0464/h $\Rightarrow$ \$0.1667 $\approx$ 3.6 instance-hours; \$0.0942 $\approx$ 2.0 h (our arithmetic)}
+\cheat{Q\&A routing}{Controller maths $\rightarrow$ Ashutosh. oneM2M / architecture $\rightarrow$ Manoj. Motivation / related work $\rightarrow$ Raj. Results numbers $\rightarrow$ John can repeat them, you handle any ``but'' question.}
+}
+
+\slide{part-05}{$\sim$10 s}{Your pink opener.}
+\say{``Thanks John. Those are strong numbers. Let's see what they are compared with, whether they add up, and where the paper is weaker.''}
+
+\slide{baselines}{$\sim$35 s}{Three baseline families: unmanaged, static threshold, literature.}
+\say{``The paper compares against three things. First, unmanaged: everything stays local. That is John's overloaded scenario, a default Mobius install, the worst case.''}
+\say{``Second, a static threshold: send 100\,\% of traffic to the cloud when CPU goes over 70\,\%, and come back when it falls below 50. That is the typical industry `cloud bursting' rule.''}
+\say{``Third, published methods: FI-RBTOM, a fuzzy rule-based offloading model; a fuzzy Q-learning scheme; and a load-balance-aware collaborative offloading strategy. Important: those are compared only qualitatively, from what their papers report.''}
+
+\slide{fig4}{$\sim$40 s}{Paper Fig.\,4: offloading ratio over time, static (dashed blue) vs.\ fuzzy (solid green), shaded saving.}
+\say{``This figure shows how much traffic each method sends to the cloud over time. The static rule, dashed, does nothing until the CPU limit, then jumps to a fixed level and stays there, even after the load drops.''}
+\say{``The fuzzy controller, solid, rises with the peak and then backs off as load falls. The shaded area is cloud capacity the static rule pays for but does not need. That is where the cost saving comes from.''}
+
+\slide{table4}{$\sim$40 s}{Table IV simplified: six methods, six criteria.}
+\say{``This is the paper's Table IV, simplified. Read the last column: 3.75 seconds RTT, 92.5\,\% success, \$1.22, low oscillation, native in oneM2M, no training needed.''}
+\say{``Static thresholds improve on unmanaged, but over-provision and oscillate: the bang-bang problem. The fuzzy Q-learning approach does well but needs training. And all the others run outside oneM2M.''}
+\say{``But be careful: only the unmanaged and proposed columns are measured. The others are just the direction of improvement their own papers reported, on different setups. So this table positions the work; it does not prove it is better.''}
+
+\slide{arith}{$\sim$45 s}{Headline numbers recomputed from Table III; cost breakdown; AWS t2.medium price.}
+\say{``We checked the headline numbers against Table III, and all three reproduce: 43.5\,\% cost, 55.9\,\% RTT, 19.4\,\% success.''}
+\say{``One nuance: the 19.4\,\% is relative. In absolute terms, success goes from 77.5 to 92.5\,\%, that's 15 percentage points. Still good, but say it precisely.''}
+\say{``On cost: the instance is a t2.medium at about 4.6 cents an hour. The AWS runtime part of the bill matches a few instance-hours. But most of the bill, 92\,\%, is an `operational' cost the paper never defines. So the 43.5\,\% is mostly a saving on a cost model we cannot inspect.''}
+
+\slide{sim}{$\sim$50 s}{Our re-simulation: synthetic load on top; $\alpha$ for static (orange steps) vs.\ fuzzy (blue).}
+\say{``We re-implemented the controller from the paper's equations and Table I, and put it in a closed loop with a toy edge server. This is our illustration, not the paper's data.''}
+\say{``The static rule, orange, slams between 0 and 1, exactly the bang-bang the paper describes.''}
+\say{``The fuzzy controller, blue, is graded and follows the load up and back down, which matches the paper's story. But we also see it hunting. When it offloads, CPU and RTT fall, so on the next cycle it sees a calmer server and offloads less, and then load comes back. The smoothing and hysteresis help, but the paper never analyses this loop's stability. That is a fair question for the authors.''}
+\ifasked{Isn't that just your toy model?}{Yes, the exact shape depends on our plant. The point is structural: two of the controller's three inputs (CPU, RTT) are measured after offloading, so its own action changes its inputs. The paper does not discuss this.}
+
+\slide{scale}{$\sim$40 s}{Two scaling patterns: per-node FLCs with shared knowledge; a hierarchical cloud FLC setting caps.}
+\say{``What about hundreds of edge nodes? The paper proposes two patterns. Each node runs its own controller and only shares summaries: communication grows linearly with nodes, decision time stays constant. Or a hierarchy: a cloud-level fuzzy controller sets per-region offloading caps, while each node still decides locally.''}
+\say{``The controller is cheap, under half a millisecond every 5 seconds, so it won't be the bottleneck. But note: this is argued, not measured. The testbed has one edge node and one cloud VM.''}
+
+\slide{critique}{$\sim$60 s}{Strengths (green) vs.\ limitations we found (orange).}
+\say{``Overall assessment. Strengths: it's fully interpretable, 27 rules you can read, no training data. It runs inside oneM2M, so any oneM2M app benefits unchanged. It's cheap. The design principles are sensible. And it improves QoS and cost together.''}
+\say{``Limitations. One edge node, one VM, synthetic traffic. Literature comparison is qualitative, and the static baseline has no numbers. Results are means of 5 runs with no variance. Curiously, CPU and RAM averages are identical in every scenario of Table III. The operational cost is undefined. The text promises bandwidth and task size as inputs, but the controller uses CPU, RTT and traffic. And the breakpoints are hand-tuned with no stability analysis.''}
+\tip{If time is short, say the first two limitations and the stability point only.}
+\ifasked{Anything editorial?}{Some references are duplicated (e.g.\ [1] and [22], [2] and [9], [4] and [16], [6] and [19]) and one citation renders as ``[?]'' in the scalability section.}
+
+\slide{summary}{$\sim$40 s}{Summary on the left, four future-work items on the right.}
+\say{``To sum up: a 27-rule fuzzy controller inside a MAPE-K loop decides how much oneM2M traffic to send to the cloud. Under overload it cuts RTT by 56\,\%, raises success by 19\,\% relative, cuts cost by 43\,\%, and brings CPU back to 40--50\,\%.''}
+\say{``The authors plan four next steps: auto-tune the rules with reinforcement learning or evolutionary search; optimise QoS, energy and cost together; add security signals like DDoS detection as fuzzy inputs; and run a distributed, hierarchical version on a real multi-host edge testbed, which would answer most of our concerns.''}
+
+\slide{thanks}{--}{Thank-you slide with the five of us and the full citation.}
+\say{``A small, readable fuzzy controller inside oneM2M that improves speed, reliability and cost under overload. Convincing as a prototype, but the evidence is still one edge node and one cloud VM. Thank you; we're happy to take questions.''}
+
+\section*{Harder questions you might get}
+\ifasked{Would a well-tuned PID controller do the same?}{Possibly for a single input. The fuzzy approach handles three inputs with readable rules and no model; the paper does not compare against PID, which is a fair gap.}
+\ifasked{Why does heavy load cost more with the controller?}{The paper calls it a deliberate trade-off: it offloads more to absorb bursts (heavy load has $\times1.5$ bursts) and keep QoS, offset by savings at medium and peak.}
+\ifasked{Is 3.75\,s RTT actually good for IoT?}{Not in absolute terms; seconds-level RTT means heavy queueing even in the normal case (3.25\,s). The claim is relative improvement on this testbed.}
+\ifasked{How does it compare to fuzzy Q-learning numerically?}{It doesn't, numerically: Table IV is qualitative for the literature methods.}
+\end{document}

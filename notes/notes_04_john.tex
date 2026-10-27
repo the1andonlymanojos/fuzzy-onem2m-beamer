@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage{speakernotes}
+\colorlet{speaker}{spJohn}
+\newcommand{\speakername}{John}
+\newcommand{\partno}{04}
+\newcommand{\parttitle}{Did it work? (experimental setup and results)}
+\setlength{\parskip}{7pt}
+
+\begin{document}
+\cover{%
+\cheat{Your job, in one sentence}{Show that \textbf{with the fuzzy brain, the server goes back to almost normal, and it costs less}. About \textbf{3 minutes}. Every slide has one message; the slide title says it.}
+\cheat{Your slides}{Slides \slidenum{part-04}--\slidenum{three}. Seven slides after your opener.}
+\cheat{The only three numbers you need}{%
+{\Large\bfseries 43.5\,\% cheaper \qquad 55.9\,\% faster \qquad 19.4\,\% more succeed}\\[3pt]
+(compared with doing nothing, under heavy load)}
+\cheat{Your first line}{``Thanks Ashutosh. So, did it work? Short answer: yes. Let me show you.''}
+\cheat{Your last line}{``Is that good enough? Ayush will tell you.''}
+\cheat{If someone asks you something hard}{Do not guess. Say one of these, they are true:\\[3pt]
+\textbullet{} About \textbf{how the controller computes}: ``Ashutosh covered that, he can answer.''\\
+\textbullet{} About \textbf{comparisons, costs, or weaknesses}: ``Ayush goes into that next.''\\
+\textbullet{} About \textbf{the hardware}: ``Ashutosh's last slide has the exact setup.''\\
+\textbullet{} Anything else: ``Good question, let's take it at the end.''}
+\cheat{Remember}{The kitchen analogy from Raj: edge server = own kitchen, cloud = catering. ``Fuzzy brain'' = the controller. You can say ``fuzzy brain'' the whole time.}
+}
+
+\slide{part-04}{5 s}{Your purple opener.}
+\say{``Thanks Ashutosh. So, did it work? Short answer: yes. Let me show you.''}
+
+\slide{testpic}{20 s}{Fake devices $\rightarrow$ edge server with the fuzzy brain $\rightarrow$ cloud.}
+\say{``Here is the whole test. The authors made fake devices, from 50 up to 1000 of them, sending requests to an edge server with the fuzzy brain. When it's too busy, the overflow goes to the Amazon cloud.''}
+\say{``Each test ran for 30 minutes, and they repeated it 5 times.''}
+
+\slide{loads}{20 s}{Four bars: 50, 250, 600, 1000 devices.}
+\say{``They tried four levels of load: light, 50 devices; medium, 250; heavy, 600; and peak, 1000 devices. Each device sends about one request per second.''}
+
+\slide{scenarios}{25 s}{Three cards: Normal (green), Overloaded (orange), With fuzzy (blue).}
+\say{``And three scenarios. Normal: normal traffic, nothing special. Overloaded: heavy traffic, and no help. With fuzzy: the same heavy traffic, but the fuzzy brain is switched on.''}
+\say{``The last two get exactly the same traffic. The only difference is the fuzzy brain.''}
+
+\slide{rttcurve}{30 s}{The paper's response-time chart over 180 seconds.}
+\say{``This is response time over three minutes. Blue is normal: low and steady.''}
+\say{``Red is overloaded: it climbs and stays high, around 8 to 9 seconds.''}
+\say{``Green is with the fuzzy brain. It starts climbing like the red one, then at about 80 seconds the fuzzy brain kicks in, sends work to the cloud, and the response time drops back down to about 3 to 4 seconds.''}
+\tip{Point at the place where the green line drops. That is the whole story.}
+
+\slide{bars}{30 s}{Three bar charts: RTT, success rate, CPU, for the three scenarios.}
+\say{``Here are the averages side by side. Response time: 3.25 seconds normal, 8.5 overloaded, 3.75 with fuzzy.''}
+\say{``Success rate: 95\,\%, down to 77.5, back up to 92.5.''}
+\say{``CPU: 42.5\,\%, up to 82.5, back down to 45.''}
+\say{``Overloaded is bad on everything. With fuzzy is almost back to normal.''}
+
+\slide{cost}{25 s}{Cost per hour at each load level: orange = no management, blue = fuzzy.}
+\say{``And the bill. Orange is no management, blue is with the fuzzy brain. At light load, same cost: nothing needed to move. At medium load, 34\,\% cheaper. At peak load, 44\,\% cheaper.''}
+\say{``At heavy load it costs 3\,\% more. That is on purpose: it spends a little extra to keep the service good.''}
+
+\slide{three}{20 s}{43.5\,\%, 55.9\,\%, 19.4\,\%.}
+\say{``So, three numbers to remember. 43.5\,\% cheaper. 55.9\,\% faster. 19.4\,\% more requests succeed. All compared with doing nothing, under heavy load.''}
+\say{``Is that good enough? Ayush will tell you.''}
+
+\vspace{1em}
+\cheat{That's it.}{Hand over to Ayush and step back. If a question comes during Q\&A, use the lines on the first page.}
+\end{document}
