@@ -7,7 +7,7 @@
 
 \begin{document}
 \cover{%
-\cheat{Your job}{You have the technical core, about \textbf{6 minutes}. You own everything mathematical: membership functions, the 27 rules, inference, defuzzification, the worked example, the three design principles, and the testbed / controller configuration (moved here from John's part so his stays simple). If John or Ayush gets a ``how does it compute'' question in Q\&A, it comes to you.}
+\cheat{Your job}{You have the technical core, about \textbf{6 minutes}. You own everything mathematical, plus the ``why not machine learning?'' slide: membership functions, the 27 rules, inference, defuzzification, the worked example, the three design principles, and the testbed / controller configuration (moved here from John's part so his stays simple). If John or Ayush gets a ``how does it compute'' question in Q\&A, it comes to you.}
 \cheat{Your slides}{Slides \slidenum{part-03}--\slidenum{config}.}
 \cheat{Opening line}{``Thanks Manoj. Let's open the Plan box. Inside it is a fuzzy logic controller, and the easiest way in is a question: is 69\,\% CPU high?''}
 \cheat{Hand-off line}{``So that is how the controller decides. John will now show you whether it actually worked.''}
@@ -22,6 +22,14 @@
 \say{``Is 69\,\% CPU high? With a crisp threshold at 70, 69 is `not high' and 71 is `high'. Two almost identical states, and the system does opposite things. That is how threshold controllers end up flipping back and forth.''}
 \say{``A fuzzy set says 69\,\% is 0.45 high and 71\,\% is 0.55 high. A small change in the input gives a small change in the output.''}
 \say{``The other big advantage: you write the controller as sentences an engineer would say, like `if CPU is high and RTT is high, offload a lot', and you do not need an exact mathematical model of the server.''}
+
+\slide{whynotml}{$\sim$50 s}{Why not a neural net? Left: what ML would need. Right: what fuzzy gives. Bottom: an operator's tweak request handled both ways.}
+\say{``The obvious question: why not machine learning? Why not just throw a neural network at it?''}
+\say{``Because a neural net needs labelled data: for every combination of CPU, RTT and traffic, the \emph{right} alpha. That dataset doesn't exist for a live oneM2M server. So you'd have to invent one, simulated or hypothetical traces, and the network would learn that dataset, not your real traffic. And the moment you change the server, the SLA or the traffic mix, you collect data and retrain.''}
+\say{``Real deployments need tweakability. Say the operator says `offload a bit less at medium load'. With a neural net: new data, retrain, re-validate, and hope. With fuzzy: you change rule 14 from medium to low, and you know exactly what changes. Properties like `more load never means less offloading' are guaranteed by how the rules are written, not hoped for from training.''}
+\say{``That doesn't mean learning is useless. The authors' own future work uses reinforcement learning to \emph{tune} these rules, not to replace them. Learning adjusts the knobs, and humans can still read and override the rules.''}
+\ifasked{But a neural net could be more accurate?}{On the dataset it was trained on, maybe. Here there's no ground-truth ``correct'' alpha to be accurate against, the system changes over time, and an operator needs to understand and adjust the behaviour. Accuracy on a hypothetical dataset doesn't help with that.}
+\ifasked{What about reinforcement learning, which doesn't need labels?}{RL learns from trial and error on the live system, which means exploring bad decisions on production traffic, and it is still hard to inspect. Fuzzy Q-learning [7] is in Ayush's comparison: it works, but needs training. The paper's position is: start with readable rules, use RL later to tune them.}
 
 \slide{flcpipe}{$\sim$35 s}{Pipeline: inputs $\rightarrow$ fuzzify $\rightarrow$ rules $\rightarrow$ infer $\rightarrow$ defuzzify $\rightarrow$ $\alpha$. Output and ranges in two blocks.}
 \say{``The controller has three inputs: CPU usage in percent, round-trip time in milliseconds, and incoming traffic in messages per second. One output: alpha, the share of traffic sent to the cloud, between 0 and 1.''}

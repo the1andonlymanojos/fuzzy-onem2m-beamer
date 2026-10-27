@@ -430,7 +430,7 @@
 \begin{frame}{Edge layer vs.\ cloud layer}
   \slideid{edgecloud}
   \centering
-  \renewcommand{\arraystretch}{1.35}
+  \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{>{\bfseries}l p{5.2cm} p{5.2cm}}
     \toprule
      & {\color{mcmPrimary}\textbf{Edge}} & {\color{spJohn}\textbf{Cloud}} \\
@@ -443,7 +443,7 @@
     \bottomrule
   \end{tabular}
 
-  \vspace{0.5cm}
+  \vspace{0.2cm}
   {\small\color{mcmPrimary}\textbf{Goal:} use the edge as much as possible, the cloud only as much as needed.}
 \end{frame}
 
@@ -566,6 +566,43 @@
   \end{columns}
   \vspace{6pt}
   \centering{\small Fuzzy logic turns expert sentences (``if CPU is high and RTT is high, offload a lot'') into a smooth controller, \textbf{no exact system model needed}.}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+\begin{frame}{Why not just train a neural network?}
+  \slideid{whynotml}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{A neural net needs\dots}
+        \footnotesize
+        \begin{itemize}
+          \item \textbf{Labelled data}: state $\rightarrow$ the \emph{right} $\alpha$. None exists for a live oneM2M server.
+          \item So you \textbf{invent} it (hypothetical traces), and the net learns that, not your real traffic.
+          \item New server, SLA or traffic mix $\Rightarrow$ \textbf{collect and retrain}.
+          \item Black box: no ``why'', no guarantees.
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{The fuzzy controller instead}
+        \footnotesize
+        \begin{itemize}
+          \item \textbf{No training data}: works from day one.
+          \item \textbf{27 readable rules}; every decision traces back.
+          \item Monotone, no single-spike panic: \textbf{by construction}.
+          \item \textbf{Tweakable}: edit a rule or a breakpoint, predictable effect.
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+  \vspace{2pt}
+  \centering
+  \begin{tikzpicture}[every node/.style={font=\scriptsize,align=center}]
+    \node[draw=mcmBlack!40,rounded corners=3pt,fill=white,inner sep=4pt] (ask) {Operator: \emph{``offload a bit less at medium load''}};
+    \node[draw=mcmAlert,fill=mcmAlert!10,rounded corners=3pt,inner sep=4pt,right=0.6cm of ask,yshift=0.32cm] (nn) {Neural net: new data, retrain, re-validate, hope};
+    \node[draw=mcmExample,fill=mcmExample!12,rounded corners=3pt,inner sep=4pt,right=0.6cm of ask,yshift=-0.32cm] (fz) {Fuzzy: rule 14, M $\rightarrow$ L. Done.};
+    \draw[arr] (ask.east)--(nn.west); \draw[arr] (ask.east)--(fz.west);
+  \end{tikzpicture}
 \end{frame}
 
 % -----------------------------------------------------------------------------

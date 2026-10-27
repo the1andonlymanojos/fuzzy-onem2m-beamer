@@ -67,6 +67,6 @@
 
 \section*{If you get questions during Q\&A}
 \ifasked{Why not just buy a bigger edge server?}{Load is bursty: a server big enough for the peak sits idle most of the time. Offloading only the overflow is cheaper.}
-\ifasked{Why not machine learning?}{ML needs training data and is hard to explain. Fuzzy rules are readable and work from day one. Ayush compares with a fuzzy Q-learning approach.}
+\ifasked{Why not machine learning, or just a neural net?}{There is no labelled dataset of ``the right offloading share'' for a real server, so you would train on made-up data, and you would have to retrain every time the setup changes. Fuzzy rules work from day one and an operator can tweak them directly. Ashutosh has a whole slide on this (slide \slidenum{whynotml}).}
 \ifasked{What is oneM2M exactly?}{A global standard for IoT middleware, a common service layer between devices and apps. Manoj's first slide covers it.}
 \end{document}

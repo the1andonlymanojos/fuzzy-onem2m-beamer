@@ -68,5 +68,6 @@ t2.medium: \$0.0464/h $\Rightarrow$ \$0.1667 $\approx$ 3.6 instance-hours; \$0.0
 \ifasked{Would a well-tuned PID controller do the same?}{Possibly for a single input. The fuzzy approach handles three inputs with readable rules and no model; the paper does not compare against PID, which is a fair gap.}
 \ifasked{Why does heavy load cost more with the controller?}{The paper calls it a deliberate trade-off: it offloads more to absorb bursts (heavy load has $\times1.5$ bursts) and keep QoS, offset by savings at medium and peak.}
 \ifasked{Is 3.75\,s RTT actually good for IoT?}{Not in absolute terms; seconds-level RTT means heavy queueing even in the normal case (3.25\,s). The claim is relative improvement on this testbed.}
+\ifasked{So is ML just worse?}{Not worse, different trade-off. ML needs data that matches the real deployment and retraining when it changes; fuzzy rules are readable and tweakable on the spot. Ashutosh's slide \slidenum{whynotml} covers it; the authors' future work uses RL to tune the rules, not replace them.}
 \ifasked{How does it compare to fuzzy Q-learning numerically?}{It doesn't, numerically: Table IV is qualitative for the literature methods.}
 \end{document}

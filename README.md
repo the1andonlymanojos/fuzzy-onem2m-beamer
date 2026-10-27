@@ -7,9 +7,9 @@ Adaptive Edge-to-Cloud Traffic Offloading* (Zyane & Et-Tousy, FiCloud 2026).
 |---|---|---|---|
 | 01 | Raj | Introduction, motivation, research gap | 1–9 |
 | 02 | Manoj | oneM2M, architecture (Fig. 1–2), MAPE-K | 10–17 |
-| 03 | Ashutosh | Fuzzy controller, worked example, testbed + configuration | 18–29 |
-| 04 | John | Results, kept deliberately simple | 30–37 |
-| 05 | Ayush | Baselines, Table IV, cost check, re-simulation, critique, conclusion | 38–47 |
+| 03 | Ashutosh | Fuzzy controller, why not a neural net, worked example, testbed + configuration | 18–30 |
+| 04 | John | Results, kept deliberately simple | 31–38 |
+| 05 | Ayush | Baselines, Table IV, cost check, re-simulation, critique, conclusion | 39–48 |
 
 Part 04 is short and plain on purpose. The harder results material moved out of it:
 testbed and controller settings went to Part 03; Fig. 4, Table IV, the cost breakdown
