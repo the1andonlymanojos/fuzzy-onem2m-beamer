@@ -8,17 +8,16 @@
 \begin{document}
 \cover{%
 \cheat{Your job}{You have the technical core, about \textbf{6 minutes}. You own everything mathematical, plus the ``why not machine learning?'' slide: membership functions, the 27 rules, inference, defuzzification, the worked example, the three design principles, and the testbed / controller configuration (moved here from John's part so his stays simple). If John or Ayush gets a ``how does it compute'' question in Q\&A, it comes to you.}
-\cheat{Your slides}{Slides \slidenum{part-03}--\slidenum{config}.}
+\cheat{Your slides}{Slides \slidenum{whyfuzzy}--\slidenum{config}. When the slide colour turns orange, you're on.}
 \cheat{Opening line}{``Thanks Manoj. Let's open the Plan box. Inside it is a fuzzy logic controller, and the easiest way in is a question: is 69\,\% CPU high?''}
 \cheat{Hand-off line}{``So that is how the controller decides. John will now show you whether it actually worked.''}
 \cheat{The controller in one breath}{3 inputs (CPU \%, RTT ms, traffic msg/s), each with 3 fuzzy sets L/M/H (trapezoids at 0/20/40/60/80/100\,\% of range). 27 rules cover every combination. AND = min. Rules with the same output combine with max. Output levels are spikes at VL=0, L=0.2, M=0.5, H=0.8, VH=1. Centroid = weighted average of the spikes $\Rightarrow\alpha\in[0,1]$. $T_{\max}=10$\,s, $R_{\max}=1000$ msg/s. Runs every 5\,s, $<0.5$\,ms per run.}
 \cheat{Worked example to know by heart}{CPU 70\,\%, RTT 5\,s, traffic 650. Memberships: CPU M 0.5 / H 0.5; RTT M 1.0; traffic M 0.75 / H 0.25. Rules 14 (M), 15 (H), 23 (VH), 24 (VH) fire at 0.5, 0.25, 0.5, 0.25. Combined: M 0.5, H 0.25, VH 0.5. $\alpha=(0.25+0.2+0.5)/1.25=\mathbf{0.76}$.}
 }
 
-\slide{part-03}{$\sim$10 s}{Your part opener: orange, ``03 Ashutosh''.}
+\slide{whyfuzzy}{$\sim$45 s}{Left: a crisp step at 70\,\%. Right: a fuzzy ramp from 60 to 80\,\%. Dots at 69 and 71. First orange slide.}
 \say{``Thanks Manoj. Let's open the Plan box.''}
 
-\slide{whyfuzzy}{$\sim$40 s}{Left: a crisp step at 70\,\%. Right: a fuzzy ramp from 60 to 80\,\%. Dots at 69 and 71.}
 \say{``Is 69\,\% CPU high? With a crisp threshold at 70, 69 is `not high' and 71 is `high'. Two almost identical states, and the system does opposite things. That is how threshold controllers end up flipping back and forth.''}
 \say{``A fuzzy set says 69\,\% is 0.45 high and 71\,\% is 0.55 high. A small change in the input gives a small change in the output.''}
 \say{``The other big advantage: you write the controller as sentences an engineer would say, like `if CPU is high and RTT is high, offload a lot', and you do not need an exact mathematical model of the server.''}
@@ -31,21 +30,20 @@
 \ifasked{But a neural net could be more accurate?}{On the dataset it was trained on, maybe. Here there's no ground-truth ``correct'' alpha to be accurate against, the system changes over time, and an operator needs to understand and adjust the behaviour. Accuracy on a hypothetical dataset doesn't help with that.}
 \ifasked{What about reinforcement learning, which doesn't need labels?}{RL learns from trial and error on the live system, which means exploring bad decisions on production traffic, and it is still hard to inspect. Fuzzy Q-learning [7] is in Ayush's comparison: it works, but needs training. The paper's position is: start with readable rules, use RL later to tune them.}
 
-\slide{flcpipe}{$\sim$35 s}{Pipeline: inputs $\rightarrow$ fuzzify $\rightarrow$ rules $\rightarrow$ infer $\rightarrow$ defuzzify $\rightarrow$ $\alpha$. Output and ranges in two blocks.}
+\slide{flcpipe}{$\sim$50 s}{Pipeline: inputs $\rightarrow$ fuzzify $\rightarrow$ rules $\rightarrow$ infer $\rightarrow$ defuzzify $\rightarrow$ $\alpha$. Output block lists the five output levels; ranges block on the right.}
 \say{``The controller has three inputs: CPU usage in percent, round-trip time in milliseconds, and incoming traffic in messages per second. One output: alpha, the share of traffic sent to the cloud, between 0 and 1.''}
 \say{``It works in four steps. Fuzzify: turn each number into degrees of low, medium, high. Rules: 27 if-then rules fire. Infer: combine them. Defuzzify: squeeze the result back into one number.''}
 \say{``RTT is measured up to $T_{\max}$, 10 seconds, and traffic up to $R_{\max}$, 1000 messages per second, the worst cases seen in stress tests.''}
+
+\say{``In the Output box: alpha has five levels, very low to very high. Each is a single spike, a `singleton': very low means alpha 0, low 0.2, medium 0.5, high 0.8, very high 1.''}
+\say{``Fuzzy sets on the inputs, spikes on the output. It makes the last step a simple weighted average.''}
+\ifasked{Is it Mamdani or Sugeno?}{Mamdani-style rules and min--max inference, but with Sugeno-style singleton outputs. With singletons, centroid defuzzification becomes a weighted average of the five values, so it is effectively a zero-order Sugeno system.}
 
 \slide{mf}{$\sim$40 s}{The nine input membership functions (our plot) and the trapezoid formula.}
 \say{``Each input gets three overlapping trapezoids: low, medium, high. They are placed at fixed fractions of the range: low is fully on up to 20\,\% and gone by 40; medium rises from 20 to 40, stays flat to 60, and falls by 80; high starts at 60 and is full from 80.''}
 \say{``So for CPU, medium is `trap of 20, 40, 60, 80'. The same shape is used for RTT on 0 to 10 seconds and traffic on 0 to 1000.''}
 \say{``Because neighbours overlap, a value can be partly medium and partly high at the same time. That overlap is what makes the controller smooth.''}
 \ifasked{How were the breakpoints chosen?}{A uniform split of each range, then light manual tuning of $T_{\max}$, $R_{\max}$ and the high-end thresholds on held-out calibration traces. Automatic tuning is future work.}
-
-\slide{mfout}{$\sim$25 s}{Five output spikes at 0, 0.2, 0.5, 0.8, 1.}
-\say{``The output has five levels, very low to very high. Each is a single spike, a `singleton': very low means alpha 0, low 0.2, medium 0.5, high 0.8, very high 1.''}
-\say{``Fuzzy sets on the inputs, spikes on the output. It makes the last step a simple weighted average.''}
-\ifasked{Is it Mamdani or Sugeno?}{Mamdani-style rules and min--max inference, but with Sugeno-style singleton outputs. With singletons, centroid defuzzification becomes a weighted average of the five values, so it is effectively a zero-order Sugeno system.}
 
 \slide{rules}{$\sim$50 s}{Table I as three $3\times3$ grids, one per CPU level; rows = RTT, columns = traffic; darker = more offloading.}
 \say{``Three inputs, three levels each, gives 3 times 3 times 3, 27 rules: every combination is covered. Each rule reads: if CPU is this, and RTT is this, and traffic is this, then alpha is that.''}
@@ -58,19 +56,14 @@
 \say{``Several rules may point to the same output level; we keep the strongest, that's the max. Then the centroid: multiply each output value by its strength, add up, divide by the total strength. A weighted average.''}
 \say{``This whole thing takes under half a millisecond per decision, so the controller is never the bottleneck.''}
 
-\slide{example1}{$\sim$40 s}{Worked example, part 1: CPU 70\,\%, RTT 5\,s, traffic 650; orange markers on the membership plots; table of degrees.}
+\slide{example}{$\sim$80 s}{Worked example on one slide: 1.\ fuzzify table, 2.\ the four fired rules, 3.\ combine, 4.\ centroid $=0.76$.}
 \say{``Let's do one by hand. The edge server is at 70\,\% CPU, 5 seconds RTT, and 650 messages per second.''}
-\say{``CPU 70 sits exactly between medium and high: 0.5 each. RTT 5 seconds is in the flat top of medium: fully medium, 1.0. Traffic 650 is 0.75 medium and 0.25 high.''}
+\say{``Step 1, top left. CPU 70 sits exactly between medium and high: 0.5 each. RTT 5 seconds is in the flat top of medium: fully medium, 1.0. Traffic 650 is 0.75 medium and 0.25 high.''}
 
-\slide{example2}{$\sim$50 s}{Worked example, part 2: four fired rules, combined strengths, the division giving 0.76.}
-\say{``Only rules whose conditions are all non-zero fire. Here that is four rules. Rule 14, medium-medium-medium, says medium, with strength min of 0.5, 1, 0.75: 0.5. Rule 15 says high at 0.25. Rules 23 and 24 both say very high, at 0.5 and 0.25.''}
-\say{``Combine with max: medium 0.5, high 0.25, very high 0.5. Weighted average: 0.5 times 0.5, plus 0.8 times 0.25, plus 1 times 0.5, over 1.25. That is 0.95 over 1.25, \textbf{0.76}.''}
+\say{``Step 2, below it. Only rules whose conditions are all non-zero fire. Here that is four rules. Rule 14, medium-medium-medium, says medium, with strength min of 0.5, 1, 0.75: 0.5. Rule 15 says high at 0.25. Rules 23 and 24 both say very high, at 0.5 and 0.25.''}
+\say{``Steps 3 and 4, on the right. Combine with max: medium 0.5, high 0.25, very high 0.5. Weighted average: 0.5 times 0.5, plus 0.8 times 0.25, plus 1 times 0.5, over 1.25. That is 0.95 over 1.25, \textbf{0.76}.''}
 \say{``So right now, send about three out of every four requests to the cloud.''}
 \tip{We checked this with our own Python re-implementation, \texttt{scripts/flc.py}; you can say so.}
-
-\slide{surface}{$\sim$30 s}{Control surface: $\alpha$ as a heat-map over CPU and RTT, for low, medium and high traffic.}
-\say{``If you run that calculation for every CPU and RTT value, you get this picture of the whole controller. Three panels for low, medium and high traffic. Darker means more offloading.''}
-\say{``Notice it rises smoothly in every direction. No cliffs, unlike a threshold. And as traffic increases, left to right, the whole map gets darker.''}
 
 \slide{monotone}{$\sim$45 s}{Curves of $\alpha$ when one input is stressed alone vs.\ all three together; the three principles.}
 \say{``The authors built three principles into the rules on purpose.''}

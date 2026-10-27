@@ -8,7 +8,7 @@
 \begin{document}
 \cover{%
 \cheat{Your job}{About \textbf{5 minutes}. Put John's numbers in context: what were they compared with, do they add up, what did our own re-simulation show, does it scale, and what are the weak spots. Then close the talk and run Q\&A. You took over the harder results material from Part 4: the static-vs-fuzzy figure (Fig.\,4), Table IV, the cost breakdown and AWS pricing (Table II).}
-\cheat{Your slides}{Slides \slidenum{part-05}--\slidenum{thanks}.}
+\cheat{Your slides}{Slides \slidenum{fig4}--\slidenum{thanks}. When the slide colour turns pink, you're on.}
 \cheat{Opening line}{``Thanks John. Those are strong numbers. Let's see what they are compared with, whether they add up, and where the paper is weaker.''}
 \cheat{Closing line}{``To sum up: a small, readable fuzzy controller inside oneM2M that improves speed, reliability and cost under overload. Convincing as a prototype, but the evidence is still one edge node and one cloud VM. Thank you; we're happy to take questions.''}
 \cheat{Arithmetic you can show on demand}{%
@@ -19,16 +19,14 @@ t2.medium: \$0.0464/h $\Rightarrow$ \$0.1667 $\approx$ 3.6 instance-hours; \$0.0
 \cheat{Q\&A routing}{Controller maths $\rightarrow$ Ashutosh. oneM2M / architecture $\rightarrow$ Manoj. Motivation / related work $\rightarrow$ Raj. Results numbers $\rightarrow$ John can repeat them, you handle any ``but'' question.}
 }
 
-\slide{part-05}{$\sim$10 s}{Your pink opener.}
+\slide{fig4}{$\sim$70 s}{Left: paper Fig.\,4, offloading ratio over time, static (dashed blue) vs.\ fuzzy (solid green), shaded saving. Right: the three baselines and how to read the figure.}
 \say{``Thanks John. Those are strong numbers. Let's see what they are compared with, whether they add up, and where the paper is weaker.''}
 
-\slide{baselines}{$\sim$35 s}{Three baseline families: unmanaged, static threshold, literature.}
-\say{``The paper compares against three things. First, unmanaged: everything stays local. That is John's overloaded scenario, a default Mobius install, the worst case.''}
+\say{``On the right: the paper compares against three things. First, unmanaged: everything stays local. That is John's overloaded scenario, a default Mobius install, the worst case.''}
 \say{``Second, a static threshold: send 100\,\% of traffic to the cloud when CPU goes over 70\,\%, and come back when it falls below 50. That is the typical industry `cloud bursting' rule.''}
 \say{``Third, published methods: FI-RBTOM, a fuzzy rule-based offloading model; a fuzzy Q-learning scheme; and a load-balance-aware collaborative offloading strategy. Important: those are compared only qualitatively, from what their papers report.''}
 
-\slide{fig4}{$\sim$40 s}{Paper Fig.\,4: offloading ratio over time, static (dashed blue) vs.\ fuzzy (solid green), shaded saving.}
-\say{``This figure shows how much traffic each method sends to the cloud over time. The static rule, dashed, does nothing until the CPU limit, then jumps to a fixed level and stays there, even after the load drops.''}
+\say{``The figure on the left shows how much traffic each method sends to the cloud over time. The static rule, dashed, does nothing until the CPU limit, then jumps to a fixed level and stays there, even after the load drops.''}
 \say{``The fuzzy controller, solid, rises with the peak and then backs off as load falls. The shaded area is cloud capacity the static rule pays for but does not need. That is where the cost saving comes from.''}
 
 \slide{table4}{$\sim$40 s}{Table IV simplified: six methods, six criteria.}

@@ -9,7 +9,7 @@
 \begin{document}
 \cover{%
 \cheat{Your job, in one sentence}{Show that \textbf{with the fuzzy brain, the server goes back to almost normal, and it costs less}. About \textbf{3 minutes}. Every slide has one message; the slide title says it.}
-\cheat{Your slides}{Slides \slidenum{part-04}--\slidenum{three}. Seven slides after your opener.}
+\cheat{Your slides}{Slides \slidenum{testpic}--\slidenum{three}. Six slides. When the slide colour turns purple, you're on.}
 \cheat{The only three numbers you need}{%
 {\Large\bfseries 43.5\,\% cheaper \qquad 55.9\,\% faster \qquad 19.4\,\% more succeed}\\[3pt]
 (compared with doing nothing, under heavy load)}
@@ -23,15 +23,13 @@
 \cheat{Remember}{The kitchen analogy from Raj: edge server = own kitchen, cloud = catering. ``Fuzzy brain'' = the controller. You can say ``fuzzy brain'' the whole time.}
 }
 
-\slide{part-04}{5 s}{Your purple opener.}
+\slide{testpic}{40 s}{Top: fake devices $\rightarrow$ edge server with the fuzzy brain $\rightarrow$ cloud. Bottom: four bars, 50, 250, 600, 1000 devices.}
 \say{``Thanks Ashutosh. So, did it work? Short answer: yes. Let me show you.''}
 
-\slide{testpic}{20 s}{Fake devices $\rightarrow$ edge server with the fuzzy brain $\rightarrow$ cloud.}
 \say{``Here is the whole test. The authors made fake devices, from 50 up to 1000 of them, sending requests to an edge server with the fuzzy brain. When it's too busy, the overflow goes to the Amazon cloud.''}
 \say{``Each test ran for 30 minutes, and they repeated it 5 times.''}
 
-\slide{loads}{20 s}{Four bars: 50, 250, 600, 1000 devices.}
-\say{``They tried four levels of load: light, 50 devices; medium, 250; heavy, 600; and peak, 1000 devices. Each device sends about one request per second.''}
+\say{``Underneath: they tried four levels of load: light, 50 devices; medium, 250; heavy, 600; and peak, 1000 devices. Each device sends about one request per second.''}
 
 \slide{scenarios}{25 s}{Three cards: Normal (green), Overloaded (orange), With fuzzy (blue).}
 \say{``And three scenarios. Normal: normal traffic, nothing special. Overloaded: heavy traffic, and no help. With fuzzy: the same heavy traffic, but the fuzzy brain is switched on.''}

@@ -8,7 +8,7 @@
 \begin{document}
 \cover{%
 \cheat{Your job}{You open the talk. In about \textbf{4 minutes} the room should know: what problem the paper attacks (busy IoT servers), why the usual fix (fixed thresholds) is not good enough, what gap the paper fills, and the three headline numbers. You do \emph{not} explain fuzzy logic or the architecture; Manoj and Ashutosh do.}
-\cheat{Your slides}{Slides \slidenum{title}--\slidenum{contrib}: title, roadmap, bursty traffic, what QoS means, kitchen analogy, problem statement, research gap, related work, contributions.}
+\cheat{Your slides}{Slides \slidenum{title}--\slidenum{contrib}: title, roadmap, bursty traffic and what QoS means, kitchen analogy, problem statement, related work and the gap, contributions.}
 \cheat{Opening line}{``Good morning. We are presenting a 2026 FiCloud paper on a simple question: when an IoT server gets too busy, how much of its work should it hand over to the cloud?''}
 \cheat{Hand-off line}{``So that is the why. Manoj will now show you the system the authors built.''}
 \cheat{Numbers you must know}{%
@@ -32,12 +32,11 @@
 \say{``Keep one question in mind for the whole talk: \emph{when an IoT server gets busy, how much work should it hand to the cloud?}''}
 \tip{Each part has its own colour. Point out that the colour bar at the top changes with the speaker.}
 
-\slide{bursty}{$\sim$30 s}{A bursty traffic curve crossing a dashed ``capacity'' line. Bullets: many devices, tiny messages, sudden bursts.}
+\slide{bursty}{$\sim$50 s}{Left: a bursty traffic curve crossing a dashed ``capacity'' line. Right: the four QoS numbers, RTT, success rate, CPU, RAM.}
 \say{``IoT is everywhere: factories, hospitals, smart cities, wearables. Each device sends tiny messages, 10 to 50 kilobytes. The problem is not size. It is \emph{timing}. When something happens, many devices talk at once.''}
 \say{``The dashed line is what one edge server can handle. Every time the traffic goes above it, requests queue up, delays explode, and some requests fail.''}
 
-\slide{qos}{$\sim$25 s}{Four cards: RTT, success rate, CPU, RAM.}
-\say{``Quality of Service sounds abstract, so here is what the paper actually measures. Round-trip time: how long a request takes. Success rate: how many requests do not fail. And CPU and RAM: how hard the server is working.''}
+\say{``Above that line, Quality of Service drops. QoS sounds abstract, so here, on the right, is what the paper actually measures. Round-trip time: how long a request takes. Success rate: how many requests do not fail. And CPU and RAM: how hard the server is working.''}
 \say{``Every result you will see later is one of these four numbers.''}
 
 \slide{analogy}{$\sim$35 s}{Restaurant analogy: orders $\rightarrow$ own kitchen $\rightarrow$ catering service, with $\alpha$ as the share sent out.}
@@ -50,15 +49,14 @@
 \say{``IoT load does not respect fixed lines. A hard threshold either reacts too late, or it flips back and forth around the line. The price is slower service, failed requests, and a bigger cloud bill, and it hurts most in latency-critical uses like remote healthcare and industrial automation.''}
 \say{``So we need a controller that adapts while the system runs, without needing an exact mathematical model of it.''}
 
-\slide{gap}{$\sim$35 s}{Venn diagram: oneM2M QoS, fuzzy offloading, MAPE-K loops. The paper sits in the middle.}
+\slide{gap}{$\sim$55 s}{Venn diagram of oneM2M QoS, fuzzy offloading and MAPE-K loops, with the paper in the middle; on the right, the four strands of related work.}
 \say{``Three lines of work already exist. People have studied QoS in oneM2M, but with fixed rules. People have used fuzzy logic for offloading, but outside oneM2M. And people have built self-managing MAPE-K loops for oneM2M, but without fuzzy reasoning.''}
 \say{``Nobody had put all three together: a fuzzy controller living \emph{inside} the oneM2M middleware, deciding offloading in real time. That intersection is this paper.''}
-\ifasked{Is this really new?}{The individual pieces are not new; the paper's claim is the integration inside a standards-compliant oneM2M server. Ayush comes back to how strong that claim is.}
 
-\slide{related}{$\sim$30 s}{Four columns of related work with reference numbers.}
-\say{``A quick map of the related work. QoS frameworks for IoT monitor well but adapt slowly. Edge and fog offloading methods mostly need exact predictions of parameters, which IoT rarely gives you. Fuzzy offloading, like FI-RBTOM and fuzzy Q-learning, handles uncertainty well. And the authors' own earlier papers built SLA-driven traffic control in oneM2M.''}
-\say{``Each column solves part of the problem; none does all of it inside oneM2M.''}
+\say{``On the right, the related work in a bit more detail. QoS frameworks for IoT monitor well but adapt slowly. Edge and fog offloading methods mostly need exact predictions of parameters, which IoT rarely gives you. Fuzzy offloading, like FI-RBTOM and fuzzy Q-learning, handles uncertainty well. And the authors' own earlier papers built SLA-driven traffic control in oneM2M.''}
+\say{``Each line solves part of the problem; none does all of it inside oneM2M.''}
 \tip{Do not read the reference numbers aloud. They are there for anyone checking.}
+\ifasked{Is this really new?}{The individual pieces are not new; the paper's claim is the integration inside a standards-compliant oneM2M server. Ayush comes back to how strong that claim is.}
 
 \slide{contrib}{$\sim$35 s}{Three contributions on the left, three headline numbers on the right.}
 \say{``The paper contributes three things: a fuzzy model built for oneM2M QoS, with three inputs and 27 rules; that model placed inside a self-management loop that re-decides every five seconds; and a test on a real oneM2M server, Mobius, with an Amazon cloud tier.''}

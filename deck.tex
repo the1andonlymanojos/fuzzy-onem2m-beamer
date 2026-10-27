@@ -70,25 +70,6 @@
 \newcommand{\xmark}{{\color{cBase}\ding{55}}}
 \newcommand{\src}[1]{\par\vfill{\tiny\color{mcmBlack!50}#1}}
 
-% Part opener: big number, speaker name, topic, what is covered
-\newcommand{\speakerpart}[5]{% #1 colour #2 number #3 name #4 title #5 contents
-  \begin{frame}[plain]
-    \slideid{part-#2}
-    \begin{tikzpicture}[remember picture,overlay]
-      \fill[mcmBg] (current page.south west) rectangle (current page.north east);
-      \fill[#1] (current page.south west) rectangle ([xshift=4.6cm]current page.north west);
-      \node[anchor=center,text=white,font=\fontsize{80}{80}\selectfont\bfseries]
-        at ([xshift=2.3cm,yshift=0.6cm]current page.west) {#2};
-      \node[anchor=center,text=white,font=\large\mcmTitleFont]
-        at ([xshift=2.3cm,yshift=-1.0cm]current page.west) {\MakeUppercase{#3}};
-      \node[anchor=west,text width=9.6cm,align=left]
-        at ([xshift=5.4cm,yshift=0.7cm]current page.west)
-        {{\mcmTitleFont\LARGE\color{#1}#4}};
-      \node[anchor=north west,text width=9.6cm,align=left,font=\small,text=mcmBlack!70]
-        at ([xshift=5.4cm,yshift=-0.5cm]current page.west) {#5};
-    \end{tikzpicture}
-  \end{frame}}
-
 \tikzset{
   box/.style={draw=#1,fill=#1!10,rounded corners=3pt,line width=0.8pt,
     align=center,inner sep=5pt,font=\small},
@@ -167,42 +148,25 @@
           \addplot[dashed,cBase,line width=1pt,domain=0:100] {0.6};
           \node[font=\scriptsize\bfseries,text=cBase,anchor=south east] at (axis cs:100,0.6) {what one edge server can handle};
         \end{axis}
-      \end{tikzpicture}
+      \end{tikzpicture}\\
+      {\footnotesize Billions of devices send tiny messages (10--50\,KB), but \textbf{all at once}, and \textbf{without warning}.}
     \end{column}
     \begin{column}{0.44\textwidth}
-      \small
-      \begin{itemize}
-        \item Billions of devices: factories, hospitals, smart cities, wearables.
-        \item Each sends tiny messages (10--50\,KB), but \textbf{all at once} when something happens.
-        \item Load changes \textbf{without warning}: devices move, apps change, resources are shared.
-      \end{itemize}
-      \begin{alertblock}{The result}
-        Above the dashed line: requests queue, latency explodes, some requests fail.
-      \end{alertblock}
+      {\small Above the line, Quality of Service drops. The paper measures it with four numbers:}\\[6pt]
+      \centering
+      \begin{tikzpicture}[every node/.style={align=center}]
+        \foreach \x/\y/\big/\what in {0/0/{RTT}/{round-trip time:\\how long a request takes},
+            2.75/0/{\%\,OK}/{success rate:\\requests that don't fail},
+            0/-1.75/{CPU}/{how hard the\\server works},
+            2.75/-1.75/{RAM}/{how full its\\memory is}}{
+          \node[box,minimum width=2.6cm,minimum height=1.55cm] at (\x,\y) {};
+          \node[font=\large\bfseries,text=mcmPrimary] at (\x,\y+0.35) {\big};
+          \node[font=\tiny,text=mcmBlack!75] at (\x,\y-0.3) {\what};
+        }
+      \end{tikzpicture}\\[4pt]
+      {\footnotesize Hold on to these: every result later is one of them.}
     \end{column}
   \end{columns}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{What ``Quality of Service'' means here}
-  \slideid{qos}
-  \centering
-  \begin{tikzpicture}[every node/.style={align=center}]
-    \foreach \x/\big/\name/\what in {
-      0/{RTT}/{Round-trip time}/{How long a request\\takes to come back},
-      3.6/{\%\,OK}/{Success rate}/{Share of requests\\that do not fail},
-      7.2/{CPU}/{CPU usage}/{How hard the\\server is working},
-      10.8/{RAM}/{RAM usage}/{How full its\\memory is}}{
-      \node[box,minimum width=3.1cm,minimum height=2.7cm] at (\x,0) {};
-      \node[font=\Large\bfseries,text=mcmPrimary] at (\x,0.65) {\big};
-      \node[font=\small\bfseries] at (\x,0.0) {\name};
-      \node[font=\scriptsize,text=mcmBlack!70] at (\x,-0.75) {\what};
-    }
-  \end{tikzpicture}
-
-  \vspace{0.5cm}
-  {\small QoS = keep latency bounded, throughput sufficient, service available.\\
-  The paper measures it with exactly these four numbers. Hold on to them.}
 \end{frame}
 
 % -----------------------------------------------------------------------------
@@ -260,12 +224,12 @@
 \end{frame}
 
 % -----------------------------------------------------------------------------
-\begin{frame}{The research gap: three ideas that had not met}
+\begin{frame}{Related work and the gap: three ideas that had not met}
   \slideid{gap}
   \begin{columns}[c]
-    \begin{column}{0.55\textwidth}
+    \begin{column}{0.38\textwidth}
       \centering
-      \begin{tikzpicture}[scale=0.95]
+      \begin{tikzpicture}[scale=0.8]
         \begin{scope}[blend group=multiply]
           \fill[spRaj!30] (0,0.9) circle (1.65);
           \fill[cBase!30] (-1.1,-0.85) circle (1.65);
@@ -275,42 +239,20 @@
         \node[font=\scriptsize\bfseries,align=center] at (-1.75,-1.45) {Fuzzy\\offloading};
         \node[font=\scriptsize\bfseries,align=center] at (1.75,-1.45) {MAPE-K\\autonomic loops};
         \node[circle,fill=mcmPrimary,text=white,font=\scriptsize\bfseries,inner sep=2pt,align=center] at (0,-0.2) {this\\paper};
-        \node[font=\tiny,text=mcmBlack!60] at (0,3.0) {[8], [20], [21]};
-        \node[font=\tiny,text=mcmBlack!60] at (-2.6,-2.6) {[6], [7], [16]--[19]};
-        \node[font=\tiny,text=mcmBlack!60] at (2.6,-2.6) {[21]--[23]};
       \end{tikzpicture}
     \end{column}
-    \begin{column}{0.42\textwidth}
-      \small
-      \begin{itemize}
-        \item oneM2M QoS studies exist, but use \textbf{fixed} traffic rules.
-        \item Fuzzy offloading exists, but \textbf{outside} oneM2M middleware.
-        \item MAPE-K loops exist for oneM2M, but without fuzzy reasoning.
-      \end{itemize}
-      \vspace{4pt}
-      {\color{mcmPrimary}\textbf{Gap:} a fuzzy controller living \emph{inside} oneM2M, deciding offloading in real time.}
+    \begin{column}{0.6\textwidth}
+      \footnotesize
+      \renewcommand{\arraystretch}{1.3}
+      \begin{tabular}{@{}>{\raggedright\arraybackslash\bfseries}p{2.9cm}>{\raggedright\arraybackslash}p{5.2cm}@{}}
+        QoS frameworks \muted{[8]--[10]} & monitor well, but slow to adapt and heavy to run\\
+        Edge / fog offloading \muted{[11]--[15]} & heuristics, optimisation, ML; most need exact parameter predictions\\
+        Fuzzy offloading \muted{[6], [7], [16]--[19]} & handles uncertainty (FI-RBTOM, fuzzy Q-learning), but \textbf{outside} oneM2M\\
+        oneM2M QoS + MAPE-K \muted{[20], [21]} & the authors' earlier work: self-managing, but with \textbf{fixed} rules\\
+      \end{tabular}\\[6pt]
+      {\small\color{mcmPrimary}\textbf{Gap:} a fuzzy controller living \emph{inside} oneM2M, deciding offloading in real time.}
     \end{column}
   \end{columns}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{Related work at a glance}
-  \slideid{related}
-  \centering
-  \begin{tikzpicture}[every node/.style={align=left,font=\scriptsize}]
-    \foreach \x/\c/\head/\body/\refs in {
-      0/spRaj/{QoS frameworks\\for IoT}/{Good monitoring and\\management, but slow to\\adapt and heavy to run}/{[8]--[10]},
-      3.75/cNormal/{Edge / fog\\offloading}/{Heuristics, optimisation\\and ML; most need exact\\parameter predictions}/{[11]--[15]},
-      7.5/cBase/{Fuzzy logic\\for offloading}/{Handles uncertainty with\\IF--THEN rules; FI-RBTOM,\\fuzzy Q-learning}/{[6], [7], [16]--[19]},
-      11.25/spJohn/{oneM2M QoS +\\MAPE-K}/{Authors' own earlier work:\\protocol QoS, SLA-driven\\automatic traffic control}/{[20], [21]}}{
-      \node[fill=\c,text=white,font=\small\bfseries,minimum width=3.45cm,minimum height=1.1cm,align=center,rounded corners=3pt] at (\x,1.2) {\head};
-      \node[draw=\c,fill=\c!8,minimum width=3.45cm,minimum height=1.9cm,rounded corners=3pt,align=center] at (\x,-0.45) {\body};
-      \node[text=mcmBlack!55] at (\x,-1.65) {\refs};
-    }
-  \end{tikzpicture}
-
-  \vspace{0.4cm}
-  {\small Every column solves part of the problem. None of them does all of it inside the oneM2M standard.}
 \end{frame}
 
 % -----------------------------------------------------------------------------
@@ -340,11 +282,6 @@
 % 02  MANOJ: background and proposed system architecture
 % =============================================================================
 \usespeaker{spManoj}{02 Manoj}
-\speakerpart{spManoj}{02}{Manoj}{Background and proposed system architecture}{%
-  oneM2M in one slide \textbullet{} the three-layer architecture (Fig.\,1) \textbullet{}
-  the step-by-step workflow (Fig.\,2) \textbullet{} edge vs.\ cloud \textbullet{}
-  the Autonomic QoS Manager and its MAPE-K loop}
-
 % -----------------------------------------------------------------------------
 \begin{frame}{oneM2M: one common language for IoT}
   \slideid{onem2m}
@@ -376,28 +313,7 @@
 \end{frame}
 
 % -----------------------------------------------------------------------------
-\begin{frame}{The proposed architecture (paper, Fig.\,1)}
-  \slideid{fig1}
-  \begin{columns}[c]
-    \begin{column}{0.56\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{figs/paper/fig1_architecture.png}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \small
-      \begin{enumerate}
-        \item \textbf{Devices} (sensors, factory, wind turbine) feed \textbf{data injectors}.
-        \item The \textbf{edge oneM2M platform}: protocol bindings $\rightarrow$ CSE $\rightarrow$ AEs $\rightarrow$ containers.
-        \item A \textbf{database} stores CPU / RAM / RTT / success rate.
-        \item The \textbf{MAPE-K loop} with the \textbf{Fuzzy Logic Controller} watches it all.
-        \item Offloaded traffic goes to a second \textbf{oneM2M instance on AWS}.
-      \end{enumerate}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{Same picture, three layers}
+\begin{frame}{The proposed architecture (paper Fig.\,1, redrawn)}
   \slideid{layers}
   \centering
   \begin{tikzpicture}[node distance=0.5cm]
@@ -406,6 +322,7 @@
     % edge
     \node[draw=mcmPrimary,fill=mcmPrimary!6,rounded corners=4pt,minimum width=8.3cm,minimum height=3.2cm,below=0.9cm of dev.south west,anchor=north west] (edge) {};
     \node[anchor=north west,font=\small\bfseries,text=mcmPrimary] at (edge.north west) {\;Edge layer: local oneM2M (Mobius)};
+    \node[anchor=south west,font=\tiny,text=mcmBlack!60] at (edge.south west) {\;close, fast, no bill, but small: saturates under bursts};
     \node[box,minimum width=2.2cm,minimum height=1.0cm] (cse) at ([xshift=1.55cm,yshift=0.35cm]edge.west) {CSE + AEs\\\scriptsize serves requests};
     \node[draw=cBase,fill=cBase!10,rounded corners=3pt,minimum width=4.9cm,minimum height=1.9cm,align=center] (aqm) at ([xshift=-2.75cm,yshift=-0.2cm]edge.east) {};
     \node[font=\scriptsize\bfseries,text=cBase!80!black,anchor=north] at (aqm.north) {Autonomic QoS Manager};
@@ -423,27 +340,7 @@
   \end{tikzpicture}
 
   \vspace{4pt}
-  {\small $1-\alpha$ of the traffic stays at the edge, $\alpha$ goes to the cloud. Only $\alpha$ is decided.}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{Edge layer vs.\ cloud layer}
-  \slideid{edgecloud}
-  \centering
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{>{\bfseries}l p{5.2cm} p{5.2cm}}
-    \toprule
-     & {\color{mcmPrimary}\textbf{Edge}} & {\color{spJohn}\textbf{Cloud}} \\
-    \midrule
-    Where & Gateways, small servers next to devices & Data centres, far away \\
-    Strength & Low delay, no cloud bill & Lots of CPU, storage, networking \\
-    Weakness & Small: saturates under bursts & Extra latency and a per-hour cost \\
-    Best for & Time-sensitive, light work & Heavy work, overflow during peaks \\
-    In the paper & Ubuntu 22.04, 4 vCPU, 4\,GiB + Mobius & AWS EC2 t2.medium + Mobius \\
-    \bottomrule
-  \end{tabular}
-
-  \vspace{0.2cm}
+  {\small $1-\alpha$ of the traffic stays at the edge, $\alpha$ goes to the cloud. Only $\alpha$ is decided.}\\
   {\small\color{mcmPrimary}\textbf{Goal:} use the edge as much as possible, the cloud only as much as needed.}
 \end{frame}
 
@@ -507,32 +404,10 @@
   \end{columns}
 \end{frame}
 
-% -----------------------------------------------------------------------------
-\begin{frame}{Hand-off: open the ``Plan'' box}
-  \slideid{handoff2}
-  \centering
-  \begin{tikzpicture}
-    \node[draw=mcmPrimary,line width=1pt,rounded corners=4pt,minimum width=3.0cm,minimum height=1.6cm,align=center] (in) {\textbf{measured state}\\\scriptsize CPU, RTT, traffic};
-    \node[draw=spAshutosh,fill=spAshutosh!12,line width=1.5pt,rounded corners=4pt,minimum width=4.0cm,minimum height=2.0cm,right=1.2cm of in,align=center,font=\Large\bfseries,text=spAshutosh] (box) {?};
-    \node[draw=mcmPrimary,line width=1pt,rounded corners=4pt,minimum width=3.0cm,minimum height=1.6cm,right=1.2cm of box,align=center] (out) {\textbf{one number}\\\scriptsize $\alpha \in [0,1]$};
-    \draw[arr] (in)--(box); \draw[arr] (box)--(out);
-    \node[below=0.15cm of box,font=\small\bfseries,text=spAshutosh] {Fuzzy Logic Controller};
-  \end{tikzpicture}
-
-  \vspace{0.8cm}
-  {\large Everything so far is plumbing. The interesting part is \textbf{how $\alpha$ is chosen}.}\\[6pt]
-  {\small\muted{Over to Ashutosh.}}
-\end{frame}
-
 % =============================================================================
 % 03  ASHUTOSH: fuzzy logic controller and methodology
 % =============================================================================
 \usespeaker{spAshutosh}{03 Ashutosh}
-\speakerpart{spAshutosh}{03}{Ashutosh}{The fuzzy logic controller and methodology}{%
-  why fuzzy \textbullet{} inputs and output $\alpha(t)$ \textbullet{} membership functions \textbullet{}
-  the 27-rule base (Table I) \textbullet{} inference and defuzzification \textbullet{} a worked example \textbullet{}
-  monotonicity principles \textbullet{} testbed and controller configuration}
-
 % -----------------------------------------------------------------------------
 \begin{frame}{Why fuzzy? Is 69\,\% CPU ``high''?}
   \slideid{whyfuzzy}
@@ -624,8 +499,9 @@
   \begin{columns}[T]
     \begin{column}{0.45\textwidth}
       \begin{block}{Output}
-        \small $\alpha(t) \in [0,1]$: share of incoming traffic sent from the local oneM2M platform to the cloud.\\
-        $\alpha=0$: all local. \quad $\alpha=1$: all to cloud.
+        \small $\alpha(t) \in [0,1]$: share of traffic sent to the cloud ($0$ all local, $1$ all cloud).\\[2pt]
+        Five levels, each a single spike (singleton):\\
+        VL\,=\,0, \;L\,=\,0.2, \;M\,=\,0.5, \;H\,=\,0.8, \;VH\,=\,1
       \end{block}
     \end{column}
     \begin{column}{0.45\textwidth}
@@ -653,26 +529,6 @@
     \begin{column}{0.4\textwidth}
       \footnotesize Uniform partition, then light hand-tuning of $T_{\max}$, $R_{\max}$ and the high-end thresholds on held-out calibration traces.\\
       \muted{Neighbouring sets overlap, so a value can be partly M and partly H.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{The output: five levels of offloading}
-  \slideid{mfout}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{figs/gen/mf_output.pdf}
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \small
-      \begin{itemize}
-        \item Five terms: Very Low, Low, Medium, High, Very High.
-        \item Each is a \textbf{singleton}: a spike at one value.\\
-              $\{0.0,\;0.2,\;0.5,\;0.8,\;1.0\}$
-        \item Inputs are Mamdani-style fuzzy sets, outputs are Sugeno-style spikes: cheap to defuzzify.
-      \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
@@ -737,58 +593,42 @@
 \end{frame}
 
 % -----------------------------------------------------------------------------
-\begin{frame}{Worked example (1/2): fuzzify}
-  \slideid{example1}
-  {\small Edge server state: \textbf{CPU = 70\,\%}, \textbf{RTT = 5\,s}, \textbf{traffic = 650 msg/s}.}\\[2pt]
-  \centering
-  \includegraphics[width=\textwidth]{figs/gen/mf_example.pdf}\\[2pt]
-  \begin{tabular}{lccc}
-    & L & M & H\\\midrule
-    CPU 70\,\% & 0 & \textbf{0.50} & \textbf{0.50}\\
-    RTT 5\,s & 0 & \textbf{1.00} & 0\\
-    Traffic 650 & 0 & \textbf{0.75} & \textbf{0.25}\\
-  \end{tabular}
-  \src{Computed with our re-implementation of the controller, \texttt{scripts/flc.py}.}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{Worked example (2/2): rules, combine, defuzzify}
-  \slideid{example2}
-  \begin{columns}[c]
-    \begin{column}{0.5\textwidth}
-      \centering\small
-      \renewcommand{\arraystretch}{1.2}
+\begin{frame}{Worked example: CPU 70\,\%, RTT 5\,s, traffic 650 msg/s}
+  \slideid{example}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \footnotesize
+      \textbf{1. Fuzzify}\\[2pt]
+      \begin{tabular}{lccc}
+        & L & M & H\\\midrule
+        CPU 70\,\% & 0 & \textbf{0.50} & \textbf{0.50}\\
+        RTT 5\,s & 0 & \textbf{1.00} & 0\\
+        Traffic 650 & 0 & \textbf{0.75} & \textbf{0.25}\\
+      \end{tabular}\\[8pt]
+      \textbf{2. Rules that fire} \muted{(the other 23 give 0)}\\[2pt]
+      \renewcommand{\arraystretch}{1.1}
       \begin{tabular}{clc}
-        \toprule
-        rule & IF CPU, RTT, traffic & $w_k$ \\
+        rule & CPU, RTT, traffic & $w_k=\min$ \\
         \midrule
-        14 & M, M, M $\rightarrow$ \textbf{M} & $\min(.5,1,.75)=0.50$\\
-        15 & M, M, H $\rightarrow$ \textbf{H} & $\min(.5,1,.25)=0.25$\\
-        23 & H, M, M $\rightarrow$ \textbf{VH} & $\min(.5,1,.75)=0.50$\\
-        24 & H, M, H $\rightarrow$ \textbf{VH} & $\min(.5,1,.25)=0.25$\\
-        \bottomrule
-      \end{tabular}\\[6pt]
-      {\footnotesize Other 23 rules: strength 0.}
+        14 & M, M, M $\rightarrow$ \textbf{M} & 0.50\\
+        15 & M, M, H $\rightarrow$ \textbf{H} & 0.25\\
+        23 & H, M, M $\rightarrow$ \textbf{VH} & 0.50\\
+        24 & H, M, H $\rightarrow$ \textbf{VH} & 0.25\\
+      \end{tabular}
     \end{column}
-    \begin{column}{0.47\textwidth}
+    \begin{column}{0.45\textwidth}
       \small
-      Combine (max): \; M $=0.50$, \; H $=0.25$, \; VH $=0.50$\\[8pt]
+      \textbf{3. Combine (max)}\\
+      M $=0.50$, \; H $=0.25$, \; VH $=0.50$\\[8pt]
+      \textbf{4. Centroid}
       \[ \alpha=\frac{0.5\cdot0.50+0.8\cdot0.25+1.0\cdot0.50}{0.50+0.25+0.50} \]
-      \[ \alpha = \frac{0.95}{1.25} = \mathbf{0.76} \]
+      \[ \alpha=\frac{0.95}{1.25}=\mathbf{0.76} \]
       \begin{exampleblock}{Meaning}
         Send about \textbf{3 of every 4} requests to the cloud right now.
       \end{exampleblock}
     \end{column}
   \end{columns}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{The whole controller as a picture}
-  \slideid{surface}
-  \centering
-  \includegraphics[width=0.98\textwidth]{figs/gen/control_surface.pdf}\\[4pt]
-  {\small Darker = more offloading. The surface rises smoothly with every input: no cliffs, unlike a threshold.}
-  \src{Our plot of the paper's rule base and membership functions (\texttt{scripts/make\_figs.py}).}
+  \src{Checked with our re-implementation of the controller, \texttt{scripts/flc.py}.}
 \end{frame}
 
 % -----------------------------------------------------------------------------
@@ -851,39 +691,26 @@
 % 04  JOHN: experimental setup and results  (kept deliberately simple)
 % =============================================================================
 \usespeaker{spJohn}{04 John}
-\speakerpart{spJohn}{04}{John}{Did it work?}{%
-  the test in one picture \textbullet{} four load levels \textbullet{} three scenarios \textbullet{}
-  what happened to speed, reliability and CPU \textbullet{} what happened to the bill}
-
 % -----------------------------------------------------------------------------
 \begin{frame}{The test in one picture}
   \slideid{testpic}
   \centering
   \begin{tikzpicture}[node distance=2.3cm]
-    \node[box=cNormal,minimum width=3.2cm,minimum height=2.2cm,font=\normalsize] (d) {\textbf{Fake devices}\\[2pt]\small 50 to 1000\\\small of them};
-    \node[box=mcmPrimary,minimum width=3.4cm,minimum height=2.2cm,right=of d,font=\normalsize] (e) {\textbf{Edge server}\\[2pt]\small with the\\\small fuzzy brain};
-    \node[box=cBase,minimum width=3.2cm,minimum height=2.2cm,right=of e,font=\normalsize] (c) {\textbf{Cloud}\\[2pt]\small Amazon\\\small (AWS)};
+    \node[box=cNormal,minimum width=3.2cm,minimum height=1.7cm,font=\normalsize] (d) {\textbf{Fake devices}\\[2pt]\small 50 to 1000\\\small of them};
+    \node[box=mcmPrimary,minimum width=3.4cm,minimum height=1.7cm,right=of d,font=\normalsize] (e) {\textbf{Edge server}\\[2pt]\small with the\\\small fuzzy brain};
+    \node[box=cBase,minimum width=3.2cm,minimum height=1.7cm,right=of e,font=\normalsize] (c) {\textbf{Cloud}\\[2pt]\small Amazon\\\small (AWS)};
     \draw[arr,line width=2pt] (d)--node[above,font=\small]{requests}(e);
     \draw[arr,line width=2pt,dashed] (e)--node[above,font=\small]{overflow}(c);
-  \end{tikzpicture}
-
-  \vspace{0.8cm}
-  {\Large Each run: \textbf{30 minutes}, repeated \textbf{5 times}.}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{Four levels of load}
-  \slideid{loads}
-  \centering
+  \end{tikzpicture}\\[10pt]
   \begin{tikzpicture}
-    \foreach \x/\h/\n/\l in {0/0.25/50/Light,3.5/1.25/250/Medium,7/3.0/600/Heavy,10.5/5.0/1000/Peak}{
-      \fill[mcmPrimary!80,rounded corners=2pt] (\x,0) rectangle ++(1.8,\h*0.8);
-      \node[font=\large\bfseries,text=mcmPrimary,above] at (\x+0.9,\h*0.8) {\n};
-      \node[font=\normalsize\bfseries,below] at (\x+0.9,-0.05) {\l};
+    \foreach \x/\h/\n/\l in {0/0.25/50/Light,3.5/1.0/250/Medium,7/2.2/600/Heavy,10.5/3.4/1000/Peak}{
+      \fill[mcmPrimary!80,rounded corners=2pt] (\x,0) rectangle ++(1.8,\h*0.55);
+      \node[font=\normalsize\bfseries,text=mcmPrimary,above] at (\x+0.9,\h*0.55) {\n};
+      \node[font=\small\bfseries,below] at (\x+0.9,-0.05) {\l};
     }
     \draw[mcmBlack!40,line width=0.8pt] (-0.3,0)--(12.6,0);
-  \end{tikzpicture}\\[6pt]
-  {\large devices, each sending about \textbf{one request per second}}
+  \end{tikzpicture}\\[2pt]
+  {\normalsize Four load levels: devices sending about one request per second each.\quad Each run: \textbf{30 min}, repeated \textbf{5 times}.}
 \end{frame}
 
 % -----------------------------------------------------------------------------
@@ -966,49 +793,26 @@
 % 05  AYUSH: comparison, critical analysis, conclusion
 % =============================================================================
 \usespeaker{spAyush}{05 Ayush}
-\speakerpart{spAyush}{05}{Ayush}{Comparison, critical analysis and conclusion}{%
-  baselines \textbullet{} static threshold vs.\ fuzzy (Fig.\,4) \textbullet{} Table IV \textbullet{}
-  checking the numbers \textbullet{} our own re-simulation \textbullet{} scalability \textbullet{}
-  strengths and limitations \textbullet{} summary and future work}
-
 % -----------------------------------------------------------------------------
-\begin{frame}{What it is compared against}
-  \slideid{baselines}
-  \begin{columns}[T]
-    \begin{column}{0.32\textwidth}
-      \begin{block}{1. Unmanaged}
-        \small Everything processed locally. Same as the Overloaded scenario: a default Mobius install.\\[3pt]
-        \muted{Worst case.}
-      \end{block}
-    \end{column}
-    \begin{column}{0.32\textwidth}
-      \begin{block}{2. Static threshold}
-        \small Offload \textbf{100\,\%} when CPU $>$ 70\,\%; back to local when CPU $<$ 50\,\%.\\[3pt]
-        \muted{Typical industry ``cloud bursting''.}
-      \end{block}
-    \end{column}
-    \begin{column}{0.32\textwidth}
-      \begin{block}{3. Literature}
-        \small FI-RBTOM (fuzzy rules) [6], fuzzy Q-learning [7], load-balance-aware collaborative offloading [11].\\[3pt]
-        \muted{Compared qualitatively only.}
-      \end{block}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% -----------------------------------------------------------------------------
-\begin{frame}{Static threshold vs.\ fuzzy: how $\alpha$ moves (paper, Fig.\,4)}
+\begin{frame}{What it is compared against, and how $\alpha$ moves (paper Fig.\,4)}
   \slideid{fig4}
   \begin{columns}[c]
-    \begin{column}{0.58\textwidth}
+    \begin{column}{0.54\textwidth}
       \includegraphics[width=\linewidth]{figs/paper/fig4_offload_ratio.png}
     \end{column}
-    \begin{column}{0.4\textwidth}
-      \small
+    \begin{column}{0.44\textwidth}
+      \footnotesize
+      \textbf{Baselines}
+      \begin{enumerate}
+        \item \textbf{Unmanaged}: all local; the Overloaded scenario.
+        \item \textbf{Static threshold}: 100\,\% to cloud when CPU $>$ 70\,\%, back when $<$ 50\,\%. Industry ``cloud bursting''.
+        \item \textbf{Literature} [6], [7], [11]: qualitative only.
+      \end{enumerate}
+      \textbf{In the figure}
       \begin{itemize}
-        \item \textbf{Static} (dashed): 0\,\% until the CPU limit, then jumps to a fixed rate and stays there.
-        \item \textbf{Fuzzy} (solid): rises with the peak, then \textbf{backs off} as load falls.
-        \item Shaded area = cloud capacity the static rule pays for but does not need.
+        \item Static (dashed): nothing, then a jump to a fixed rate that stays.
+        \item Fuzzy (solid): rises with the peak, \textbf{backs off} as load falls.
+        \item Shaded = cloud capacity static pays for but doesn't need.
       \end{itemize}
     \end{column}
   \end{columns}
